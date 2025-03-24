@@ -1,0 +1,19 @@
+{
+  "name": "memory-game",
+  "description": "memory game",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "html-entities": "^2.5.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "*"
+  }
+}
