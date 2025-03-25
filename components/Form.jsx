@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react'
 
 export default function Form({ action, isPending, isFirstRender }) {
     const divRef = useRef(null)
+    console.log('form');
 
     useEffect(() => {
         !isFirstRender && divRef.current.focus()
