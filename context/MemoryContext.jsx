@@ -43,9 +43,10 @@ function MemoryContextProvider({ children }) {
                     return { emojisArray, error: false }
 
                 } catch (err) {
-                    setIsFirstRender(false)
                     setIsGameOn(true)
                     return { ...prevState, error: true }
+                } finally {
+                    setIsFirstRender(false)
                 }
 
             }, [])

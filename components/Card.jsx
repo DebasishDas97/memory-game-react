@@ -1,8 +1,8 @@
-import { memo, useEffect } from "react";
+import { useEffect } from "react";
 import { useMemory } from "../context/MemoryContext";
 import EmojiButton from "./EmojiButton";
 
-function Card({ emoji, index }) {
+export default function Card({ emoji, index }) {
 
   const { selectedCards, matchedCards, state, setMatchedCards, setAreAllCardsMatched, isTimeOut } = useMemory()
   console.log('card');
@@ -44,5 +44,3 @@ function Card({ emoji, index }) {
 
 
 }
-
-export default memo(Card)
