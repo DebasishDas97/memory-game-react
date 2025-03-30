@@ -1,17 +1,25 @@
 import { decodeEntity } from 'html-entities'
-import { MemoryContext } from '../App';
-import { useContext } from 'react';
+import { useMemory } from '../context/MemoryContext';
 
 export default function EmojiButton({
     emoji,
     selectedCardEntry,
     matchedCardEntry,
     index,
-
 }) {
 
-    const {isTimeOut, turnCard} = useContext(MemoryContext)
+    const {isTimeOut, setSelectedCards, selectedCards} = useMemory()
+
     console.log('emoji button');
+
+    const turnCard = (name, index) => {
+        if (selectedCards.length < 2) {
+          setSelectedCards(prevSelectedCards => [...prevSelectedCards, { name, index }])
+        } else if (selectedCards.length === 2) {
+          setSelectedCards([{ name, index }])
+        }
+      }
+
 
     const btnContent = selectedCardEntry || matchedCardEntry ? decodeEntity(emoji.htmlCode[0]) : "?"
 
