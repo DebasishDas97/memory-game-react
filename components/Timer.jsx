@@ -7,6 +7,7 @@ export default function Timer() {
 
     console.log('timer');
 
+
     useEffect(() => {
         if (!isGameOn || isTimeOut || areAllCardsMatched) return;
 

@@ -1,7 +1,8 @@
 import { decodeEntity } from 'html-entities'
 import { useGameState, useSelectedCards } from '../context/MemoryContext';
+import { memo } from 'react';
 
-export default function EmojiButton({
+ function EmojiButton({
     emoji,
     selectedCardEntry,
     matchedCardEntry,
@@ -45,3 +46,5 @@ export default function EmojiButton({
         </button>
     )
 }
+
+export default memo(EmojiButton)

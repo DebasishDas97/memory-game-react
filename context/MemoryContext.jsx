@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useMemo, useCallback } from "react";
+import { createContext, useState, useContext, useMemo, useCallback, useEffect } from "react";
 import { useActionState } from "react";
 import { startTransition } from "react";
 
@@ -8,7 +8,10 @@ const SelectedCardsContext = createContext();
 const EmojiDataContext = createContext();
 
 function useResetableActionState(initialState, setIsGameOn, setIsFirstRender) {
+    console.log('again');
+
     const customAction = useCallback(async (prevState, formData) => {
+
         const formValues = Object.fromEntries(formData);
 
         if (Object.keys(formValues).length === 0) {
@@ -45,7 +48,7 @@ function useResetableActionState(initialState, setIsGameOn, setIsFirstRender) {
         startTransition(() => {
             dispatch(new FormData());
         });
-    }, [dispatch]);
+    }, []);
 
     return useMemo(() => ({ state, dispatch, isPending, reset }), [state, dispatch, isPending, reset]);
 }
@@ -100,6 +103,19 @@ function MemoryContextProvider({ children }) {
         isPending,
         reset,
     }), [state, dispatch, isPending, reset]);
+
+  useEffect(() => {
+    if (selectedCards?.length === 2 && selectedCards[0].name === selectedCards[1].name) {
+      setMatchedCards(prevMatchedCards => [...prevMatchedCards, ...selectedCards])
+    }
+  }, [selectedCards])
+
+  useEffect(() => {
+    if (state?.emojisArray?.length && matchedCards.length === state?.emojisArray?.length && !isTimeOut) {
+      setAreAllCardsMatched(true)
+    }
+  }, [matchedCards])
+
 
     return (
         <GameStateContext.Provider value={gameStateValue}>

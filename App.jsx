@@ -5,7 +5,6 @@ import ErrorCard from '/components/ErrorCard'
 import { useEmojiData, useGameState } from './context/MemoryContext'
 
 export default function App() {
-
     const { isGameOn, areAllCardsMatched } = useGameState()
 
     const {state} = useEmojiData()
