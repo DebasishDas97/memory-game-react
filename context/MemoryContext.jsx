@@ -18,7 +18,7 @@ function useResetableActionState(initialState, setIsGameOn, setIsFirstRender) {
         const { category, number } = formValues;
 
         try {
-            const response = await fetch(`https://emojihu.yurace.pro/api/all/category/${category}`);
+            const response = await fetch(`https://emojihub.yurace.pro/api/all/category/${category}`);
 
             if (!response.ok) {
                 throw new Error("Could not fetch data from API");

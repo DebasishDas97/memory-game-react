@@ -12,8 +12,6 @@ export default function App() {
 
     console.log('app');
 
-console.log(isGameOn, state.error);
-
     return (
         <main>
             <h1>Memory</h1>
