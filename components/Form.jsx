@@ -1,10 +1,11 @@
-import { useMemory } from '../context/MemoryContext'
+import { useEmojiData, useGameState } from '../context/MemoryContext'
 import RegularButton from './RegularButton'
 import Select from './Select'
 import { useRef, useEffect } from 'react'
 
 export default function Form() {
-    const {isFirstRender, dispatch, isPending } = useMemory()
+    const {isFirstRender } = useGameState()
+    const {isPending, dispatch} = useEmojiData()
     const divRef = useRef(null)
     console.log('form');
 

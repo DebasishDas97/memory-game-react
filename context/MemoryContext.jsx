@@ -1,132 +1,144 @@
 import { createContext, useState, useContext, useMemo, useCallback } from "react";
-import { useActionState } from 'react'
-import { startTransition } from 'react'
-const MemoryContext = createContext();
+import { useActionState } from "react";
+import { startTransition } from "react";
 
-function MemoryContextProvider({ children }) {
-    const [isGameOn, setIsGameOn] = useState(false)
-    const [matchedCards, setMatchedCards] = useState([])
-    const [areAllCardsMatched, setAreAllCardsMatched] = useState(false)
-    const [isTimeOut, setIsTimeOut] = useState(false)
-    const [isFirstRender, setIsFirstRender] = useState(true)
-    const [selectedCards, setSelectedCards] = useState([])
+const GameStateContext = createContext();
+const MatchedCardsContext = createContext();
+const SelectedCardsContext = createContext();
+const EmojiDataContext = createContext();
 
-        const { state, dispatch, isPending, reset } = useResetableActionState({
-            emojisArray: [{ category: "animals-and-nature", number: 10 }],
-            error: false
-        })
+function useResetableActionState(initialState, setIsGameOn, setIsFirstRender) {
+    const customAction = useCallback(async (prevState, formData) => {
+        const formValues = Object.fromEntries(formData);
 
-
-        function useResetableActionState(initialState) {
-            const customAction = useCallback(async (prevState, formData) => {
-                const formValues = Object.fromEntries(formData)
-
-                if (Object.keys(formValues).length === 0) {
-                    return initialState
-                }
-
-                const { category, number } = formValues
-
-                try {
-                    const response = await fetch(`https://emojihub.yurace.pro/api/all/category/${category}`)
-
-                    if (!response.ok) {
-                        throw new Error("Could not fetch data from API")
-                    }
-
-                    const data = await response.json()
-                    const dataSlice = await getDataSlice(data, number)
-                    const emojisArray = await getEmojisArray(dataSlice)
-
-
-                    setIsGameOn(true)
-                    return { emojisArray, error: false }
-
-                } catch (err) {
-                    setIsGameOn(true)
-                    return { ...prevState, error: true }
-                } finally {
-                    setIsFirstRender(false)
-                }
-
-            }, [])
-
-            const [state, dispatch, isPending] = useActionState(customAction, initialState)
-
-            const reset = useCallback(() => {
-                setIsGameOn(false)
-                startTransition(() => {
-                    dispatch(new FormData())
-                })
-            }, [])
-
-            const value = useMemo(() => {
-                return { state, dispatch, isPending, reset }
-            }, [state, dispatch, isPending, reset])
-
-            return value
+        if (Object.keys(formValues).length === 0) {
+            return initialState;
         }
 
-        async function getDataSlice(data, number) {
-            const randomIndices = getRandomIndices(data, number)
-            const dataSlice = randomIndices.reduce((array, index) => {
-                array.push(data[index])
-                return array
-            }, [])
+        const { category, number } = formValues;
 
-            return dataSlice
-        }
+        try {
+            const response = await fetch(`https://emojihu.yurace.pro/api/all/category/${category}`);
 
-        function getRandomIndices(data, number) {
-            const randomIndicesArray = []
-
-            for (let i = 0; i < number / 2; i++) {
-                const randomNum = Math.floor(Math.random() * data.length)
-                if (!randomIndicesArray.includes(randomNum)) {
-                    randomIndicesArray.push(randomNum)
-                } else {
-                    i--
-                }
+            if (!response.ok) {
+                throw new Error("Could not fetch data from API");
             }
 
-            return randomIndicesArray
+            const data = await response.json();
+            const dataSlice = await getDataSlice(data, number);
+            const emojisArray = await getEmojisArray(dataSlice);
+
+            setIsGameOn(true);
+            return { emojisArray, error: false };
+        } catch (err) {
+            setIsGameOn(false);
+            return { ...prevState, error: true };
+        } finally {
+            setIsFirstRender(false);
         }
+    }, []);
 
-        async function getEmojisArray(data) {
-            const pairedEmojisArray = [...data, ...data]
+    const [state, dispatch, isPending] = useActionState(customAction, initialState);
 
-            for (let i = pairedEmojisArray.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1))
-                const temp = pairedEmojisArray[i]
-                pairedEmojisArray[i] = pairedEmojisArray[j]
-                pairedEmojisArray[j] = temp
-            }
+    const reset = useCallback(() => {
+        setIsGameOn(false);
+        startTransition(() => {
+            dispatch(new FormData());
+        });
+    }, [dispatch]);
 
-            return pairedEmojisArray
-        }
-
-        const resetGame = useCallback(() => {
-            setIsGameOn(false)
-            setSelectedCards([])
-            setMatchedCards([])
-            setAreAllCardsMatched(false)
-            setIsTimeOut(false)
-        }, [areAllCardsMatched, isTimeOut])
-
-
-    const value = { isGameOn, setIsGameOn, matchedCards, setAreAllCardsMatched, setMatchedCards, areAllCardsMatched, isTimeOut, setIsTimeOut, state, dispatch, isPending, reset, isFirstRender, selectedCards, setSelectedCards,resetGame}
-
-    return <MemoryContext.Provider value={value}>{children}</MemoryContext.Provider>;
-
+    return useMemo(() => ({ state, dispatch, isPending, reset }), [state, dispatch, isPending, reset]);
 }
 
-const useMemory = () => {
-    const value = useContext(MemoryContext);
-    if (!value) {
-        throw new Error('🗣️ useBook hook used without MemoryContext');
+function MemoryContextProvider({ children }) {
+    const [isGameOn, setIsGameOn] = useState(false);
+    const [matchedCards, setMatchedCards] = useState([]);
+    const [areAllCardsMatched, setAreAllCardsMatched] = useState(false);
+    const [isTimeOut, setIsTimeOut] = useState(false);
+    const [selectedCards, setSelectedCards] = useState([]);
+    const [isFirstRender, setIsFirstRender] = useState(true);
+
+    const { state, dispatch, isPending, reset } = useResetableActionState(
+        { emojisArray: [{ category: "animals-and-nature", number: 10 }], error: false },
+        setIsGameOn,
+        setIsFirstRender
+    );
+
+    const resetGame = useCallback(() => {
+        setIsGameOn(false);
+        setSelectedCards([]);
+        setMatchedCards([]);
+        setAreAllCardsMatched(false);
+        setIsTimeOut(false);
+    }, []);
+
+    const gameStateValue = useMemo(() => ({
+        isGameOn,
+        setIsGameOn,
+        areAllCardsMatched,
+        setAreAllCardsMatched,
+        isTimeOut,
+        setIsTimeOut,
+        isFirstRender,
+        setIsFirstRender,
+        resetGame,
+    }), [isGameOn, areAllCardsMatched, isTimeOut, isFirstRender, resetGame]);
+
+    const matchedCardsValue = useMemo(() => ({
+        matchedCards,
+        setMatchedCards,
+    }), [matchedCards]);
+
+    const selectedCardsValue = useMemo(() => ({
+        selectedCards,
+        setSelectedCards,
+    }), [selectedCards]);
+
+    const emojiDataValue = useMemo(() => ({
+        state,
+        dispatch,
+        isPending,
+        reset,
+    }), [state, dispatch, isPending, reset]);
+
+    return (
+        <GameStateContext.Provider value={gameStateValue}>
+            <MatchedCardsContext.Provider value={matchedCardsValue}>
+                <SelectedCardsContext.Provider value={selectedCardsValue}>
+                    <EmojiDataContext.Provider value={emojiDataValue}>
+                        {children}
+                    </EmojiDataContext.Provider>
+                </SelectedCardsContext.Provider>
+            </MatchedCardsContext.Provider>
+        </GameStateContext.Provider>
+    );
+}
+
+const useGameState = () => useContext(GameStateContext);
+const useMatchedCards = () => useContext(MatchedCardsContext);
+const useSelectedCards = () => useContext(SelectedCardsContext);
+const useEmojiData = () => useContext(EmojiDataContext);
+
+export { MemoryContextProvider, useGameState, useMatchedCards, useSelectedCards, useEmojiData };
+
+async function getDataSlice(data, number) {
+    const randomIndices = getRandomIndices(data, number);
+    return randomIndices.map(index => data[index]);
+}
+
+function getRandomIndices(data, number) {
+    const randomIndicesSet = new Set();
+    while (randomIndicesSet.size < number / 2) {
+        randomIndicesSet.add(Math.floor(Math.random() * data.length));
     }
+    return Array.from(randomIndicesSet);
+}
 
-    return value;
-};
-
-export { MemoryContextProvider, useMemory }
+async function getEmojisArray(data) {
+    const pairedEmojisArray = [...data, ...data];
+    for (let i = pairedEmojisArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pairedEmojisArray[i], pairedEmojisArray[j]] = [pairedEmojisArray[j], pairedEmojisArray[i]];
+    }
+    return pairedEmojisArray;
+}

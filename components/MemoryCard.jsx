@@ -1,16 +1,16 @@
-import { useMemory } from '../context/MemoryContext';
+import { useEmojiData, useGameState } from '../context/MemoryContext';
 import GameOver from './GameOver'
 import Card from './Card';
 import Timer from './Timer';
 
 export default function MemoryCard() {
-
-    const { areAllCardsMatched, isTimeOut, state } = useMemory()
+    const { areAllCardsMatched, isTimeOut } = useGameState()
+    const {state} = useEmojiData()
     console.log('memory card');
 
     return (
         <>
-            <Timer />
+            {!state?.error && <Timer />}
             {(areAllCardsMatched || isTimeOut) && <GameOver />}
 
             <ul className="card-container">

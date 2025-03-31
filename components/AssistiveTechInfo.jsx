@@ -1,7 +1,9 @@
-import { useMemory } from "../context/MemoryContext"
+import { useEmojiData, useMatchedCards} from "../context/MemoryContext"
 
 export default function AssistiveTechInfo() {
-   const {matchedCards, state} = useMemory()
+   const {state} = useEmojiData()
+
+   const {matchedCards } = useMatchedCards()
 
     return (
         <section className="sr-only" aria-live="polite" aria-atomic="true">

@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
 import RegularButton from "./RegularButton"
-import { useMemory } from '../context/MemoryContext'
+import { useEmojiData } from '../context/MemoryContext'
 export default function ErrorCard() {
-    const { reset } = useMemory()
+    const { reset } = useEmojiData()
     function resetError() {
         reset()
     }

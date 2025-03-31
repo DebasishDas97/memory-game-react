@@ -1,12 +1,14 @@
 import { useEffect } from "react";
-import { useMemory } from "../context/MemoryContext";
+import { useEmojiData, useGameState, useMatchedCards, useSelectedCards } from "../context/MemoryContext";
 import EmojiButton from "./EmojiButton";
 
 export default function Card({ emoji, index }) {
+  const { setAreAllCardsMatched, isTimeOut } = useGameState()
+  const { state } = useEmojiData()
+  const { matchedCards, setMatchedCards } = useMatchedCards()
+  const { selectedCards } = useSelectedCards()
 
-  const { selectedCards, matchedCards, state, setMatchedCards, setAreAllCardsMatched, isTimeOut } = useMemory()
   console.log('card');
-
 
   useEffect(() => {
     if (selectedCards?.length === 2 && selectedCards[0].name === selectedCards[1].name) {

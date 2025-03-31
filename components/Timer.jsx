@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useMemory } from "../context/MemoryContext"
+import { useGameState } from "../context/MemoryContext"
 
 export default function Timer() {
     const [timer, setTimer] = useState(0)
-    const {isGameOn, isTimeOut, setIsTimeOut, areAllCardsMatched} = useMemory()
+    const {isGameOn, isTimeOut, setIsTimeOut, areAllCardsMatched} = useGameState()
 
     console.log('timer');
 
@@ -18,7 +18,7 @@ export default function Timer() {
     }, [isGameOn, isTimeOut, areAllCardsMatched]);
 
     useEffect(() => {
-        if (timer >= 14) {
+        if (timer >= 54) {
             setIsTimeOut(true);
             setTimer(0);
         }

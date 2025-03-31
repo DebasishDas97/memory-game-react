@@ -1,5 +1,5 @@
 import { decodeEntity } from 'html-entities'
-import { useMemory } from '../context/MemoryContext';
+import { useGameState, useSelectedCards } from '../context/MemoryContext';
 
 export default function EmojiButton({
     emoji,
@@ -8,8 +8,8 @@ export default function EmojiButton({
     index,
 }) {
 
-    const {isTimeOut, setSelectedCards, selectedCards} = useMemory()
-
+    const {setSelectedCards, selectedCards} = useSelectedCards()
+    const {isTimeOut} = useGameState()
     console.log('emoji button');
 
     const turnCard = (name, index) => {

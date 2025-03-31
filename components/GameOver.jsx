@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
 import RegularButton from './RegularButton'
-import { useMemory } from '../context/MemoryContext';
+import { useGameState } from '../context/MemoryContext';
 
 export default function GameOver() {
-    const { isTimeOut, resetGame } = useMemory()
+    const { isTimeOut, resetGame } = useGameState()
 
     const divRef = useRef(null)
     console.log('game over');
