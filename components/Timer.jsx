@@ -20,7 +20,7 @@ export default function Timer() {
     }, [isGameOn, isTimeOut, areAllCardsMatched]);
 
     useEffect(() => {
-        if (timer >= 54) {
+        if (timer >= 54 && !areAllCardsMatched) {
             setIsTimeOut(true);
             setTimer(0);
         }

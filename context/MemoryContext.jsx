@@ -101,7 +101,7 @@ function MemoryContextProvider({ children }) {
         setIsFirstRender,
         resetGame,
         turnCard
-    }), [isGameOn, areAllCardsMatched, isTimeOut, isFirstRender, resetGame]);
+    }), [isGameOn, isTimeOut, isFirstRender, resetGame]);
 
     const matchedCardsValue = useMemo(() => ({
         matchedCards,
