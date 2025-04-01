@@ -2,10 +2,11 @@ import Form from '/components/Form'
 import MemoryCard from '/components/MemoryCard'
 import AssistiveTechInfo from '/components/AssistiveTechInfo'
 import ErrorCard from '/components/ErrorCard'
-import { useEmojiData, useGameState } from './context/MemoryContext'
+import { useAllCardsMatched, useEmojiData, useGameState } from './context/MemoryContext'
 
 export default function App() {
-    const { isGameOn, areAllCardsMatched } = useGameState()
+    const { isGameOn } = useGameState()
+    const {areAllCardsMatched} = useAllCardsMatched()
 
     const {state} = useEmojiData()
 

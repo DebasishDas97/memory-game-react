@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useGameState } from "../context/MemoryContext"
+import { useAllCardsMatched, useGameState } from "../context/MemoryContext"
 
 export default function Timer() {
     const [timer, setTimer] = useState(0)
-    const {isGameOn, isTimeOut, setIsTimeOut, areAllCardsMatched} = useGameState()
+    const {isGameOn, isTimeOut, setIsTimeOut} = useGameState()
+    const {areAllCardsMatched} = useAllCardsMatched()
 
     console.log('timer');
 

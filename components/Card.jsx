@@ -1,33 +1,16 @@
 import { memo } from "react";
-import { useMatchedCards, useSelectedCards } from "../context/MemoryContext";
 import EmojiButton from "./EmojiButton";
 
-function Card({ emoji, index }) {
-  const { matchedCards } = useMatchedCards()
-  const { selectedCards } = useSelectedCards()
+function Card({ emoji, index, isSelected, isMatched }) {
+  console.log("Card rendering:", index);
 
-  console.log('card');
-
-
-  const selectedCardEntry = selectedCards?.find(card => card.index === index);
-  const matchedCardEntry = matchedCards?.find(card => card.index === index);
-  const cardStyle =
-    matchedCardEntry ? "card-item--matched" :
-      selectedCardEntry ? "card-item--selected" :
-        "";
-
+  const cardStyle = isMatched ? "card-item--matched" : isSelected ? "card-item--selected" : "";
 
   return (
-    <li key={index} className={`card-item ${cardStyle}`}>
-      <EmojiButton
-        emoji={emoji}
-        selectedCardEntry={selectedCardEntry}
-        matchedCardEntry={matchedCardEntry}
-        index={index}
-      />
+    <li className={`card-item ${cardStyle}`}>
+      <EmojiButton emoji={emoji} index={index} isSelected={isSelected} isMatched={isMatched} />
     </li>
   );
-
 }
 
 export default memo(Card);

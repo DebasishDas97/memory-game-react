@@ -1,50 +1,38 @@
-import { decodeEntity } from 'html-entities'
-import { useGameState, useSelectedCards } from '../context/MemoryContext';
-import { memo, useCallback } from 'react';
+import { decodeEntity } from "html-entities";
+import { useGameState } from "../context/MemoryContext";
+import { memo } from "react";
 
- function EmojiButton({
-    emoji,
-    selectedCardEntry,
-    matchedCardEntry,
-    index,
-}) {
+function EmojiButton({ emoji, index, isSelected, isMatched }) {
+  const { isTimeOut, turnCard } = useGameState();
 
-    const {setSelectedCards, selectedCards} = useSelectedCards()
-    const {isTimeOut} = useGameState()
-    console.log('emoji button');
+  console.log("EmojiButton rendering:", index);
 
-    const turnCard = useCallback((name, index) => {
-        if (selectedCards.length < 2) {
-          setSelectedCards(prevSelectedCards => [...prevSelectedCards, { name, index }])
-        } else if (selectedCards.length === 2) {
-          setSelectedCards([{ name, index }])
-        }
-      }, [])
+  const btnContent = isSelected || isMatched ? decodeEntity(emoji.htmlCode[0]) : "?";
 
 
-    const btnContent = selectedCardEntry || matchedCardEntry ? decodeEntity(emoji.htmlCode[0]) : "?"
+  const btnStyle = isMatched
+    ? "btn--emoji__back--matched"
+    : isSelected
+    ? "btn--emoji__back--selected"
+    : "btn--emoji__front";
 
-    const btnStyle =
-        (matchedCardEntry || isTimeOut) ? "btn--emoji__back--matched" :
-        selectedCardEntry ? "btn--emoji__back--selected" :
-        "btn--emoji__front"
+  const btnAria = isMatched
+    ? `${decodeEntity(emoji.name)}. Matched.`
+    : isSelected
+    ? `${decodeEntity(emoji.name)}. Not matched yet.`
+    : "Card upside down.";
 
-    const btnAria =
-        matchedCardEntry ? `${decodeEntity(emoji.name)}. Matched.` :
-        selectedCardEntry ? `${decodeEntity(emoji.name)}. Not matched yet.` :
-        "Card upside down."
-
-    return (
-        <button
-            className={`btn btn--emoji ${btnStyle}`}
-            onClick={selectedCardEntry ? null : () => turnCard(emoji.name, index)}
-            disabled={matchedCardEntry || isTimeOut}
-            aria-label={`Position ${index + 1}: ${btnAria}`}
-            aria-live="polite"
-        >
-            {btnContent}
-        </button>
-    )
+  return (
+    <button
+      className={`btn btn--emoji ${btnStyle}`}
+      onClick={isSelected ? null : () => turnCard(emoji.name, index)}
+      disabled={isMatched || isTimeOut}
+      aria-label={`Position ${index + 1}: ${btnAria}`}
+      aria-live="polite"
+    >
+      {btnContent}
+    </button>
+  );
 }
 
-export default memo(EmojiButton)
+export default memo(EmojiButton);

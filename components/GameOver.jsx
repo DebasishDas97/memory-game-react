@@ -12,8 +12,6 @@ export default function GameOver() {
         divRef.current.focus()
     }, [])
 
-
-
     return (
         <div
             className="wrapper wrapper--accent"

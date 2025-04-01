@@ -6,6 +6,7 @@ const GameStateContext = createContext();
 const MatchedCardsContext = createContext();
 const SelectedCardsContext = createContext();
 const EmojiDataContext = createContext();
+const AllCardsMatchedContext = createContext();
 
 function useResetableActionState(initialState, setIsGameOn, setIsFirstRender) {
 
@@ -73,16 +74,33 @@ function MemoryContextProvider({ children }) {
         setIsTimeOut(false);
     }, []);
 
+    const turnCard = useCallback(
+        (name, index) => {
+            setSelectedCards((prevSelectedCards) => {
+                if (prevSelectedCards.length < 2) {
+                    return [...prevSelectedCards, { name, index }];
+                } else {
+                    return [{ name, index }];
+                }
+            });
+        },
+        []
+    );
+
+    const allMatchedCardsValue = useMemo(() => ({
+        areAllCardsMatched,
+        setAreAllCardsMatched,
+    }), [areAllCardsMatched]);
+
     const gameStateValue = useMemo(() => ({
         isGameOn,
         setIsGameOn,
-        areAllCardsMatched,
-        setAreAllCardsMatched,
         isTimeOut,
         setIsTimeOut,
         isFirstRender,
         setIsFirstRender,
         resetGame,
+        turnCard
     }), [isGameOn, areAllCardsMatched, isTimeOut, isFirstRender, resetGame]);
 
     const matchedCardsValue = useMemo(() => ({
@@ -102,17 +120,17 @@ function MemoryContextProvider({ children }) {
         reset,
     }), [state, dispatch, isPending, reset]);
 
-  useEffect(() => {
-    if (selectedCards?.length === 2 && selectedCards[0].name === selectedCards[1].name) {
-      setMatchedCards(prevMatchedCards => [...prevMatchedCards, ...selectedCards])
-    }
-  }, [selectedCards])
+    useEffect(() => {
+        if (selectedCards?.length === 2 && selectedCards[0].name === selectedCards[1].name) {
+            setMatchedCards(prevMatchedCards => [...prevMatchedCards, ...selectedCards])
+        }
+    }, [selectedCards])
 
-  useEffect(() => {
-    if (state?.emojisArray?.length && matchedCards.length === state?.emojisArray?.length && !isTimeOut) {
-      setAreAllCardsMatched(true)
-    }
-  }, [matchedCards])
+    useEffect(() => {
+        if (state?.emojisArray?.length && matchedCards.length === state?.emojisArray?.length && !isTimeOut) {
+            setAreAllCardsMatched(true)
+        }
+    }, [matchedCards])
 
 
     return (
@@ -120,7 +138,9 @@ function MemoryContextProvider({ children }) {
             <MatchedCardsContext.Provider value={matchedCardsValue}>
                 <SelectedCardsContext.Provider value={selectedCardsValue}>
                     <EmojiDataContext.Provider value={emojiDataValue}>
+                        <AllCardsMatchedContext.Provider value={allMatchedCardsValue}>
                         {children}
+                        </AllCardsMatchedContext.Provider>
                     </EmojiDataContext.Provider>
                 </SelectedCardsContext.Provider>
             </MatchedCardsContext.Provider>
@@ -132,8 +152,9 @@ const useGameState = () => useContext(GameStateContext);
 const useMatchedCards = () => useContext(MatchedCardsContext);
 const useSelectedCards = () => useContext(SelectedCardsContext);
 const useEmojiData = () => useContext(EmojiDataContext);
+const useAllCardsMatched = () => useContext(AllCardsMatchedContext);
 
-export { MemoryContextProvider, useGameState, useMatchedCards, useSelectedCards, useEmojiData };
+export { MemoryContextProvider, useGameState, useMatchedCards, useSelectedCards, useEmojiData, useAllCardsMatched };
 
 async function getDataSlice(data, number) {
     const randomIndices = getRandomIndices(data, number);
