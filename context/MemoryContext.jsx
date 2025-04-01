@@ -8,10 +8,8 @@ const SelectedCardsContext = createContext();
 const EmojiDataContext = createContext();
 
 function useResetableActionState(initialState, setIsGameOn, setIsFirstRender) {
-    console.log('again');
 
     const customAction = useCallback(async (prevState, formData) => {
-
         const formValues = Object.fromEntries(formData);
 
         if (Object.keys(formValues).length === 0) {

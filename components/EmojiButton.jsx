@@ -1,6 +1,6 @@
 import { decodeEntity } from 'html-entities'
 import { useGameState, useSelectedCards } from '../context/MemoryContext';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
  function EmojiButton({
     emoji,
@@ -13,13 +13,13 @@ import { memo } from 'react';
     const {isTimeOut} = useGameState()
     console.log('emoji button');
 
-    const turnCard = (name, index) => {
+    const turnCard = useCallback((name, index) => {
         if (selectedCards.length < 2) {
           setSelectedCards(prevSelectedCards => [...prevSelectedCards, { name, index }])
         } else if (selectedCards.length === 2) {
           setSelectedCards([{ name, index }])
         }
-      }
+      }, [])
 
 
     const btnContent = selectedCardEntry || matchedCardEntry ? decodeEntity(emoji.htmlCode[0]) : "?"
